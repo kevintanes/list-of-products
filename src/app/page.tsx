@@ -13,8 +13,11 @@ interface Product {
   thumbnail: string;
 }
 
+
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([])
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -28,9 +31,26 @@ export default function Home() {
     }
   }
 
+  const fetchCategoryList = async () => {
+    try {
+      const { data } = await axios.get('https://dummyjson.com/products/category-list')
+
+      setCategories(data)
+
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+
   useEffect(() => {
     fetchProducts()
+    fetchCategoryList()
   }, [])
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
   const productsRow = Children.toArray(
     products.map((val) => {
@@ -58,8 +78,24 @@ export default function Home() {
       <p className="text-6xl">
         List of Products
       </p>
+      <div className="mt-14" id="filterButton" data-dropdown-toggle="dropdown">
+        <button onClick={toggleDropdown} type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">Filters</button>
+      </div>
 
-      <div className="relative overflow-x-auto mt-20">
+      <div id="dropdown" className={`${dropdownOpen ? '' : 'hidden'} z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 `}>
+        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="filterButton">
+          {
+            categories?.map((val: string) => (
+              <li key={val}>
+                <a href={`?categories=${val}`} className="block px-4 py-2 hover:bg-gray-100 ">{val}</a>
+              </li>
+            ))
+          }
+
+        </ul>
+      </div>
+
+      <div className="relative overflow-x-auto mt-8">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
             <tr>

@@ -9,8 +9,8 @@ interface Product {
     title: string;
     description: string;
     price: number;
-    thumbnail: string;
     images: string[];
+    availabilityStatus: string;
 }
 
 const ProductDetail = () => {
@@ -31,9 +31,6 @@ const ProductDetail = () => {
             console.log(error);
         }
     }
-
-    console.log({ product });
-
 
     useEffect(() => {
         getProductDetail()
@@ -58,9 +55,11 @@ const ProductDetail = () => {
                 <div>
                     <div className='flex justify-between mb-7 '>
                         <p className='text-2xl font-bold'>{product.title}</p>
-                        <p className='text-2xl'>${product.price}</p>
+                        <p className='text-2xl font-bold'>${product.price}</p>
                     </div>
                     <p className='text-xl'>{product.description}</p>
+                    <p className='text-xl'>{product.availabilityStatus}</p>
+
                 </div>
             </div>
         </div>
